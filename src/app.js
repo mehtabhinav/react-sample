@@ -8,7 +8,8 @@ import routes from './routes/routes';
 
 // Redux
 import configureStore from './store/configure-store';
-const store = configureStore();
+const store = (window.__REDUX_STATE__) ? configureStore(JSON.parse(window.__REDUX_STATE__)) : configureStore();
+
 const history = syncHistoryWithStore(browserHistory, store);
 
 ReactDOM.render(

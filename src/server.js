@@ -1,13 +1,16 @@
-require('babel-core/register')({
-    presets: ['es2015', 'react']
-});
-
 const path = require('path');
 const Express = require('express');
 const React = require('react');
 const Redux = require('redux');
-const reactDomServer = require('react-dom/server');
-const ReactRedux = require('react-redux');
+import { renderToString } from 'react-dom/server';
+import { Provider } from 'react-redux';
+import { Router, createMemoryHistory, browserHistory } from 'react-router';
+import { syncHistoryWithStore, routerReducer } from 'react-router-redux';
+import { match, RouterContext, createRoutes } from 'react-router'
+
+
+import routes from './routes/routes';
+
 
 //Reducers
 const SampleContainerReducer = require('./store/reducers/sample-container-reducer').default;
@@ -16,40 +19,38 @@ const SampleContainerReducer = require('./store/reducers/sample-container-reduce
 const SampleContainer = require('./containers/sample-container');
 
 const app = Express();
-app.get('/ping', initialRender);
-
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.use(Express.static(path.join(__dirname, 'static')));
+app.get('/', serve);
 
 /*
  Controller Class
  */
-function initialRender (req, res) {
-    const store = Redux.createStore(SampleContainerReducer);
-    const html = reactDomServer.renderToString(
-        <ReactRedux.Provider store={store}>
 
-        </ReactRedux.Provider>
-    );
+function serve (req, res) {
+    const history = createMemoryHistory();
+    const store = Redux.createStore(SampleContainerReducer, {});
 
-    const initialState = store.getState();
-    res.send(renderFullPage(html, initialState))
-}
+    match({routes, location: req.url}, (err, redirectLoc, renderProps) => {
+        if (err) {
 
-function renderFullPage(html, preloadedState) {
-    return `
-    <!doctype html>
-    <html>
-      <head>
-        <title>React Bootstrap</title>
-      </head>
-      <body>
-        <div id="root">${html}</div>
-        <script>
-          window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState)}
-        </script>
-        <script src="./bundle.js"></script>
-      </body>
-    </html>
-    `
+        } else if(redirectLoc) {
+
+        } else if(renderProps) {
+            const content = renderToString(
+                <Provider store={store}>
+                    <Router history={history} routes={routes} />
+                </Provider>
+
+            );
+            const finalState = JSON.stringify(store.getState());
+
+            res.render('index', {content, finalState});
+        } else {
+            res.send(404).send("Not Found");
+        }
+    });
 }
 
 const server = app.listen(8080, () => { console.log('app listening on 8080'); });

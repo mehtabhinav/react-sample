@@ -8,10 +8,8 @@ import { routerReducer } from 'react-router-redux';
 import sampleContainerReducer from './reducers/sample-container-reducer';
 
 const loggerMiddleware = createLogger();
-const preloadedState = window.__PRELOADED_STATE__;
 
 const reducers = combineReducers({
-    preloadedState,
     sampleContainerReducer,
     routing: routerReducer
 });

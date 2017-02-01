@@ -1,6 +1,6 @@
 import * as Actions from '../actions/sample-container-action';
 
-export default (state = {data: {}}, action) => {
+export default (state = {}, action) => {
     switch(action.type) {
 
         case Actions.SAMPLE_CONTAINER_COMPLETE:

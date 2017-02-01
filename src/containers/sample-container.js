@@ -19,7 +19,7 @@ export class SampleContainer extends React.Component {
     }
 
     onTabTwoClick() {
-        debugger;
+
     }
 
     render() {
@@ -41,7 +41,7 @@ SampleContainer.propTypes = {
 
 export default connect (
     state => ({
-        response: state.sampleContainerReducer.response
+        //response: state.sampleContainerReducer.response
     }),
     dispatch => bindActionCreators(Object.assign({}, sampleContainerActions), dispatch)
 )(SampleContainer);
