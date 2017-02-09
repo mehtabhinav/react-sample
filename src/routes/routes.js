@@ -6,5 +6,6 @@ import TabOneComponent from '../components/tab-one-component';
 export default (
     <Route path="/" component={SampleContainer} >
         <Route path="/tabOne" component={TabOneComponent} />
+        <Route path="/tabTwo" component={TabOneComponent} />
     </Route>
 );
